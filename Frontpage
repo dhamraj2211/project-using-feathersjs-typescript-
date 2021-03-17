@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!--Using Bootstrap and CSS-->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>Instagram</title>
+  </head>
+  <body class="bg-dark text-white">
+    <nav class="navbar navbar-light bg-light">
+      <div class="container">
+        <span class="navbar-brand mb-0 h1">Please fill your details</span>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-6">
+          <h1 class="text-center mb-3">
+            Details PLease
+          </h1>
+          <!--Create A Form-->
+          <form id="form">
+            <div class="form-group">
+              <input
+                type="text"
+                id="name"
+                class="form-control bg-dark text-white"
+                placeholder="Enter Your Name "
+                maxlength="30"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="text"
+                id="userid"
+                class="form-control bg-dark text-white"
+                placeholder="User id please"
+                maxlength="30"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                id="password"
+                class="form-control bg-dark text-white"
+                placeholder="Password Please"
+                maxlength="20"
+                required
+              />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+              Submit Please
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+<!-- LInk the feathersjs and Socketio-->
+    <script src="https://unpkg.com/@feathersjs/client@^4.3.0/dist/feathers.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+    <script>
+<!--Port number-->
+      const socket = io('http://localhost:3030');
+
+<!--App-->
+      const app = feathers();
+
+
+      app.configure(feathers.socketio(socket));
+
+      document.getElementById('form').addEventListener('submit', senddetails);
+
+      async function senddetails(e) {
+        e.preventDefault();
+<!--Using DOM-->
+        const text = document.getElementById('name');
+        const tech = document.getElementById('userid');
+        const viewer = document.getElementById('password');
+
+
+        app.service('details').create({
+          text: name.value,
+          tech: userid.value,
+          viewer: passowrd.value
+        });
+
+<!--Empty fields-->
+        text.value = '';
+        tech.value = '';
+        viewer.value = '';
+      }
+
+      function renderIdea(details) {
+        document.getElementById(
+          'details'
+        ).innerHTML += `<div class="card bg-secondary my-3">
+              <div class="card-body">
+                <p class="lead">
+                  ${details.name} <strong>(${details.userid})</strong>
+                  <br />
+                  <em>Submitted by ${details.password}</em>
+                  <br />
+                  <small>${details.time}</small>
+                </p>
+              </div>
+            </div>`;
+      }
+
+      async function init() {
+
+        const details = await app.service('details').find();
+
+
+        ideas.forEach(renderdetail);
+
+
+        app.service('details').on('created', renderdetail);
+      }
+
+      init();
+    </script>
+  </body>
+</html>
