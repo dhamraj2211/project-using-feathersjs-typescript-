@@ -1,0 +1,60 @@
+const feathers = require('@feathersjs/feathers');
+const express = require('@feathersjs/express');
+const socketio = require('@feathersjs/socketio');
+const moment = require('moment');
+
+//  Service
+class A{
+  constructor() {
+    this.details = [];
+  }
+
+  async find() {
+    return this.details;
+  }
+
+  async create(data) {
+    const details = {
+      id: this.details.length,
+      text: data.name,
+      tech: data.userid,
+      viewer: data.password
+    };
+
+    idea.time = moment().format('h:mm:ss a');
+
+    this.details.push(detail);
+
+    return detail;
+  }
+}
+
+const app = express(feathers());
+
+// Parse JSON
+app.use(express.json());
+// Config Socket.io realtime APIs
+app.configure(socketio());
+// Enable REST services
+app.configure(express.rest());
+// Register services
+app.use('/ideas', new A());
+
+// New connections connect to stream channel
+app.on('connection', conn => app.channel('Instagram').join(conn));
+// Publish events to stream
+app.publish(data => app.channel('Instragram'));
+
+const PORT = process.env.PORT || 3030;
+
+app
+  .listen(PORT)
+  .on('listening', () =>
+    console.log(`Realtime server running on port ${PORT}`)
+  );
+
+app.service('details').create({
+  text: 'Good job',
+  tech: 'Feathersjs',
+  viewer: 'Dharmraj'
+});
